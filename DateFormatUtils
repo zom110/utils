@@ -1,18 +1,10 @@
-package com.jianke.life.busi.utils;
+package com.utils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * DateFormatUtils
- *
- * @author Administrator
- * @ClassName: DateFormatUtils
- * @date 2015-1-12 下午7:52:37
- * @history
- */
 public class DateFormatUtils extends org.apache.commons.lang3.time.DateFormatUtils {
 
     private static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
