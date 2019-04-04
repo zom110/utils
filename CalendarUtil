@@ -1,0 +1,330 @@
+package com.utils;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+
+public class CalendarUtil {
+
+
+    /**
+     * 获取当天开始时间
+     *
+     * @return
+     * @Description:
+     */
+    public static Date getTodayBeginTime() {
+        Calendar calen = Calendar.getInstance();
+        calen.set(Calendar.HOUR_OF_DAY, 0);
+        calen.set(Calendar.MINUTE, 0);
+        calen.set(Calendar.SECOND, 0);
+        calen.set(Calendar.MILLISECOND, 0);
+        return calen.getTime();
+    }
+
+    /**
+     * 获取当天的结束时间
+     *
+     * @return
+     * @Description:
+     */
+    public static Date getTodayEndTime() {
+        Calendar calen = Calendar.getInstance();
+        calen.set(Calendar.HOUR_OF_DAY, 23);
+        calen.set(Calendar.MINUTE, 59);
+        calen.set(Calendar.SECOND, 59);
+        calen.set(Calendar.MILLISECOND, 0);
+        return calen.getTime();
+    }
+
+    /**
+     * 获取当日期 前后日期的开始时间
+     *
+     * @param offset 1 代表明天 -1代表昨天 ...
+     * @return
+     * @Description:
+     */
+    public static Date getBeginTimeOffsetDay(int offset) {
+        Calendar calen = Calendar.getInstance();
+        calen.add(Calendar.DATE, offset);
+        calen.set(Calendar.HOUR_OF_DAY, 0);
+        calen.set(Calendar.MINUTE, 0);
+        calen.set(Calendar.SECOND, 0);
+        calen.set(Calendar.MILLISECOND, 0);
+        return calen.getTime();
+    }
+
+    /**
+     * 获取某个时间 前后偏移N个日期的时间
+     *
+     * @param offset 1 代表明天 -1代表昨天 ...
+     * @return
+     * @Description:
+     */
+    public static Date getDateTimeOffsetDay(Date date, int offset) {
+        Calendar calen = Calendar.getInstance();
+        calen.setTime(date);
+        if (offset != 0) {
+            calen.add(Calendar.DATE, offset);
+        }
+        return calen.getTime();
+    }
+
+    /**
+     * 获取某个日期 前后日期的开始时间
+     *
+     * @param offset 1 代表明天 -1代表昨天 ...
+     * @return
+     * @Description:
+     */
+    public static Date getBeginTimeOffsetDay(Date date, int offset) {
+        Calendar calen = Calendar.getInstance();
+        calen.setTime(date);
+        if (offset != 0) {
+            calen.add(Calendar.DATE, offset);
+        }
+        calen.set(Calendar.HOUR_OF_DAY, 0);
+        calen.set(Calendar.MINUTE, 0);
+        calen.set(Calendar.SECOND, 0);
+        calen.set(Calendar.MILLISECOND, 0);
+        return calen.getTime();
+    }
+
+    /**
+     * 获当前日期时间 前/后天数的结束时间
+     *
+     * @param offset 1 代表明天 -1代表昨天 ...
+     * @return
+     * @Description:
+     */
+    public static Date getEndTimeOffsetDay(Date date, int offset) {
+        Calendar calen = Calendar.getInstance();
+        calen.setTime(date);
+        if (offset != 0) {
+            calen.add(Calendar.DATE, offset);
+        }
+        calen.set(Calendar.HOUR_OF_DAY, 23);
+        calen.set(Calendar.MINUTE, 59);
+        calen.set(Calendar.SECOND, 59);
+        calen.set(Calendar.MILLISECOND, 0);
+        return calen.getTime();
+    }
+
+    /**
+     * 获某个日期所在月 /前后月份的开始时间
+     *
+     * @param offset 1 代表下个月 0代表本月 -1代表上个月 ...
+     * @return
+     * @Description:
+     */
+    public static Date getFirstDayOffsetMonth(Date date, int offset) {
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        if (offset != 0) {
+            cal.add(Calendar.MONTH, offset);
+        }
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
+    }
+
+    /**
+     * 获取某个日期所在月的 最后一天
+     *
+     * @param date
+     * @return
+     * @Description:
+     */
+    public static Date getLastDayOfMonth(Date date) {
+
+        Calendar cal = Calendar.getInstance();
+        int daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        cal.set(Calendar.DAY_OF_MONTH, daysInMonth);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
+    }
+
+    /**
+     * 获当前日期时间 前/后月份的时间
+     *
+     * @param offset 1 代表下个月 0代表本月 -1代表上个月 ...
+     * @return
+     * @Description:
+     */
+    public static Date getDateTimeOffsetMonth(Date date, int offset) {
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        if (offset != 0) {
+            cal.add(Calendar.MONTH, offset);
+        }
+        return cal.getTime();
+    }
+
+    /**
+     * 获当前日期时间 前/后月份的结束时间
+     *
+     * @param offset 1 代表下个月 0代表本月 -1代表上个月 ...
+     * @return
+     * @Description:
+     */
+    public static Date getEndTimeOffsetMonth(Date date, int offset) {
+        Calendar calen = Calendar.getInstance();
+        calen.setTime(date);
+        if (offset != 0) {
+            calen.add(Calendar.MONTH, offset);
+        }
+        calen.set(Calendar.HOUR_OF_DAY, 23);
+        calen.set(Calendar.MINUTE, 59);
+        calen.set(Calendar.SECOND, 59);
+        calen.set(Calendar.MILLISECOND, 0);
+        return calen.getTime();
+    }
+
+    /**
+     * 获当前日期时间 前/后N小时的时间
+     *
+     * @param offset 1 代表下个月 0代表本月 -1代表上个月 ...
+     * @return
+     * @Description:
+     */
+    public static Date getDateTimeOffsetHour(Date date, int offset) {
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        if (offset != 0) {
+            cal.add(Calendar.HOUR_OF_DAY, offset);
+        }
+        return cal.getTime();
+    }
+
+
+    /**
+     * 获取某个日期所在周的 第几天的时间
+     *
+     * @param date
+     * @param num
+     * @return
+     * @Description:
+     */
+    public static Date getDayInWeek(Date date, int num) {
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.DAY_OF_WEEK, num);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
+    }
+
+    /**
+     * 获取当前日期是月份中第几天
+     *
+     * @param date
+     * @return
+     * @Description:
+     */
+    public static Integer getDayNumOfMonth(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        return calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
+    /**
+     * 获取某一时间所在日期的结束时间
+     *
+     * @return
+     * @Description:
+     */
+    public static Date getEndTimeOfDay(Date date) {
+        Calendar calen = Calendar.getInstance();
+        calen.setTime(date);
+        calen.set(Calendar.HOUR_OF_DAY, 23);
+        calen.set(Calendar.MINUTE, 59);
+        calen.set(Calendar.SECOND, 59);
+        calen.set(Calendar.MILLISECOND, 0);
+        return calen.getTime();
+    }
+
+    /**
+     * 获取d天后的某个时间点的时间
+     *
+     * @param
+     * @Description:
+     */
+    public static Date getDayHourTime(int d, int n) {
+
+        Calendar calen = Calendar.getInstance();
+        calen.add(Calendar.DATE, d);
+        calen.set(Calendar.HOUR_OF_DAY, n);
+        calen.set(Calendar.MINUTE, 0);
+        calen.set(Calendar.SECOND, 0);
+        calen.set(Calendar.MILLISECOND, 0);
+        return calen.getTime();
+    }
+
+    /**
+     * 获取两个日期内相差多少天
+     *
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static int getBetweenDay_ABS(Date date1, Date date2) {
+        final long time1 = date1.getTime();
+        final long time2 = date2.getTime();
+
+        final long interval = Math.abs(time1 - time2);
+
+        long result = interval / TimeUnit.DAYS.toMillis(1);
+
+        return (int) result;
+    }
+
+    public static int getBetweenDay(Date date1, Date date2) {
+        final long time1 = date1.getTime();
+        final long time2 = date2.getTime();
+        final long interval = time1 - time2;
+        long result = interval / TimeUnit.DAYS.toMillis(1);
+
+        return (int) result;
+    }
+
+    // 删除时间中的时分秒，结果以日期的毫秒数传回，参数为毫秒数
+    public static long deleteTimeHMS(Long time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(time));
+
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar.getTime().getTime();
+    }
+
+    // 删除时间中的时分秒，结果以日期的毫秒数传回，参数为毫秒数
+    public static Date deleteTimeHMS(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar.getTime();
+    }
+
+}
