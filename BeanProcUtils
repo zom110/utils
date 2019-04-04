@@ -1,0 +1,184 @@
+package com.utils;
+
+import com.alibaba.fastjson.JSONObject;
+
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+public class BeanProcUtils {
+    public static final String regexStr_long = "^-?\\d+$";
+    public static final String regexStr_double = "^-?\\d+(\\.\\d+)?$";
+
+    public BeanProcUtils() {
+    }
+
+    public static Map<String, Object> transBean2Map(Object obj) {
+        if (obj == null) {
+            return null;
+        } else {
+            try {
+                Map<String, Object> map = new HashMap();
+                BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass());
+                PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+                PropertyDescriptor[] var4 = propertyDescriptors;
+                int var5 = propertyDescriptors.length;
+
+                for (int var6 = 0; var6 < var5; ++var6) {
+                    PropertyDescriptor property = var4[var6];
+                    String key = property.getName();
+                    if (!key.equals("class")) {
+                        Method getter = property.getReadMethod();
+                        if (getter != null) {
+                            Object value = getter.invoke(obj, new Object[0]);
+                            map.put(key, value);
+                        }
+                    }
+                }
+
+                return map;
+            } catch (Exception var11) {
+                String errMsg = "Bean对象转换为Map时出现异常..";
+                var11.printStackTrace();
+                throw new RuntimeException(errMsg);
+            }
+        }
+    }
+
+    public static <T> T transMap2Bean(Map<String, ? extends Object> inMap, Class<T> tgtClass) {
+        if (inMap == null) {
+            return null;
+        } else {
+            String jsonStr = JSONObject.toJSONString(inMap);
+            return JSONObject.parseObject(jsonStr, tgtClass);
+        }
+    }
+
+    public static void copyProperties(Object source, Object target, Boolean ignoreSrcNull) {
+        copyProperties(source, target, ignoreSrcNull, Boolean.valueOf(false));
+    }
+
+    public static void copyProperties(Object source, Object target, Boolean ignoreSrcNull, Boolean coverTarget) {
+        if (source == null) {
+            throw new IllegalArgumentException("source is not be null");
+        } else if (target == null) {
+            throw new IllegalArgumentException("target is not be null");
+        } else {
+            if (ignoreSrcNull == null) {
+                ignoreSrcNull = Boolean.valueOf(false);
+            }
+
+            if (coverTarget == null) {
+                coverTarget = Boolean.valueOf(false);
+            }
+
+            Map<String, Object> sourceBeanMap = transBean2Map(source);
+            Map targetBeanMap = transBean2Map(target);
+
+            try {
+                BeanInfo target_beanInfo = Introspector.getBeanInfo(target.getClass());
+                PropertyDescriptor[] target_propertyDescriptors = target_beanInfo.getPropertyDescriptors();
+                PropertyDescriptor[] var8 = target_propertyDescriptors;
+                int var9 = target_propertyDescriptors.length;
+
+                for (int var10 = 0; var10 < var9; ++var10) {
+                    PropertyDescriptor property = var8[var10];
+                    String propName = property.getName();
+                    Object sourceValue = sourceBeanMap.get(propName);
+                    if (sourceValue != null || !ignoreSrcNull.booleanValue()) {
+                        Object targetValue = targetBeanMap.get(propName);
+                        if ((coverTarget.booleanValue() || targetValue == null) && !propName.equals("class")) {
+                            Method setter = property.getWriteMethod();
+                            if (setter != null) {
+                                setter.invoke(target, new Object[]{sourceValue});
+                            }
+                        }
+                    }
+                }
+
+            } catch (Exception var16) {
+                String errMsg = "Bean对象拷贝属性时出现异常..";
+                throw new RuntimeException(errMsg);
+            }
+        }
+    }
+
+    public static <T> T getMapValue(Map<?, ?> paramMap, Object key, Class<T> class1) {
+        if (paramMap != null && key != null && class1 != null) {
+            Object objectVal = paramMap.get(key);
+            if (objectVal == null) {
+                return null;
+            } else {
+                Class<? extends Object> objClass = objectVal.getClass();
+                if (objClass.equals(class1)) {
+                    return (T) objectVal;
+                } else if (objectVal instanceof String) {
+                    String strObj = (String) objectVal;
+                    if (strObj.matches("^-?\\d+$")) {
+                        if (class1.equals(Integer.class)) {
+                            return (T) Integer.valueOf(strObj);
+                        }
+
+                        if (class1.equals(Long.class)) {
+                            return (T) Long.valueOf(strObj);
+                        }
+
+                        if (class1.equals(Double.class)) {
+                            return (T) Double.valueOf(strObj);
+                        }
+
+                        if (class1.equals(Float.class)) {
+                            return (T) Float.valueOf(strObj);
+                        }
+                    } else if (strObj.matches("^-?\\d+(\\.\\d+)?$")) {
+                        if (class1.equals(Double.class)) {
+                            return (T) Double.valueOf(strObj);
+                        }
+
+                        if (class1.equals(Float.class)) {
+                            return (T) Float.valueOf(strObj);
+                        }
+                    }
+
+                    throw new IllegalArgumentException("key(" + key + ")的值(" + objectVal + ")与指定类型(" + class1 + ")不匹配");
+                } else {
+                    return !class1.equals(String.class) || !(objectVal instanceof Number) && !(objectVal instanceof Character) ? null : (T) objectVal.toString();
+                }
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public static void recBuildReqParamMap(Map<String, String> paramsMap, Object bean, String keyPre, int maxDeep, int currDeep) {
+        if (bean != null) {
+            if (currDeep <= maxDeep) {
+                if (!(bean instanceof String) && !(bean instanceof Number) && !(bean instanceof Boolean)) {
+                    Map<String, Object> transBean2Map = null;
+                    if (bean instanceof Map) {
+                        transBean2Map = (Map) bean;
+                    } else {
+                        transBean2Map = transBean2Map(bean);
+                    }
+
+                    ++currDeep;
+                    Iterator var6 = transBean2Map.keySet().iterator();
+
+                    while (var6.hasNext()) {
+                        String key = (String) var6.next();
+                        Object object = transBean2Map.get(key);
+                        recBuildReqParamMap(paramsMap, object, keyPre + "." + key, maxDeep, currDeep);
+                    }
+                } else {
+                    paramsMap.put(keyPre, String.valueOf(bean));
+                }
+
+            }
+        }
+    }
+}
+
